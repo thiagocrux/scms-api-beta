@@ -10,8 +10,8 @@ import {
 export async function createUserHandler(request: Request, response: Response) {
   try {
     const input = request.body;
-    const user = await createUser(input);
-    return response.status(201).json(user);
+    const createdUser = await createUser(input);
+    return response.status(201).json(createdUser);
   } catch (error: any) {
     return response.status(400).json({ error: error.message });
   }
@@ -20,13 +20,13 @@ export async function createUserHandler(request: Request, response: Response) {
 export async function findUserHandler(request: Request, response: Response) {
   try {
     const { userId } = request.params;
-    const user = await findUser({ _id: userId });
+    const userFound = await findUser({ _id: userId });
 
-    if (!user) {
+    if (!userFound) {
       return response.status(404).json({ message: 'User not found' });
     }
 
-    return response.status(200).json(user);
+    return response.status(200).json(userFound);
   } catch (error: any) {
     return response.status(400).json({ error: error.message });
   }
@@ -34,13 +34,13 @@ export async function findUserHandler(request: Request, response: Response) {
 
 export async function findUsersHandler(request: Request, response: Response) {
   try {
-    const users = await findUsers({});
+    const usersFound = await findUsers({});
 
-    if (!users) {
+    if (!usersFound) {
       return response.sendStatus(404);
     }
 
-    return response.status(200).json(users);
+    return response.status(200).json(usersFound);
   } catch (error: any) {
     return response.status(400).json({ error: error.message });
   }
@@ -50,8 +50,8 @@ export async function updateUserHandler(request: Request, response: Response) {
   try {
     const { userId } = request.params;
     const update = request.body;
-    const user = await updateUser({ _id: userId }, update);
-    return response.status(200).json(user);
+    const userAfterUpdate = await updateUser({ _id: userId }, update);
+    return response.status(200).json(userAfterUpdate);
   } catch (error: any) {
     return response.status(400).json({ error: error.message });
   }
