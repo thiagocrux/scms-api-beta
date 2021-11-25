@@ -48,7 +48,10 @@ export async function findUsers(filter: object) {
 
 export async function updateUser(filter: object, update: object) {
   try {
-    const updatedUser = await UserModel.findOneAndUpdate(filter, update);
+    const updatedUser = await UserModel.findOneAndUpdate(filter, update, {
+      returnDocument: 'after',
+    });
+
     return omit(updatedUser, 'password');
   } catch (error: any) {
     logger.error(`${error}`);
