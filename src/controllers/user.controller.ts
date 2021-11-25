@@ -11,7 +11,7 @@ export async function createUserHandler(request: Request, response: Response) {
   try {
     const input = request.body;
     const user = await createUser(input);
-    return response.status(201).json({ user });
+    return response.status(201).json(user);
   } catch (error: any) {
     return response.status(400).json({ error: error.message });
   }
@@ -37,7 +37,7 @@ export async function findUsersHandler(request: Request, response: Response) {
     const users = await findUsers({});
 
     if (!users) {
-      return response.status(404);
+      return response.sendStatus(404);
     }
 
     return response.status(200).json(users);
