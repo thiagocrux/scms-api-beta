@@ -1,4 +1,5 @@
 import express from 'express';
+import routes from './routes';
 import connectDatabase from './utils/connectDatabase';
 import logger from './utils/logger';
 
@@ -8,5 +9,6 @@ app.use(express.json());
 
 app.listen(3333, async () => {
   logger.info('Server listening at http://localhost:3333');
-  await connectDatabase();
+  connectDatabase();
+  routes(app);
 });
