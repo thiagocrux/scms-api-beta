@@ -7,7 +7,7 @@ import {
   updateUserHandler,
 } from './controllers/user.controller';
 
-export default async function routes(app: Express) {
+export default function routes(app: Express) {
   // User routes
 
   app.post('/api/users', createUserHandler);
