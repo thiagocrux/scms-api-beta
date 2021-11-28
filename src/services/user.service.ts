@@ -21,7 +21,7 @@ export async function findUser(filter: FilterQuery<UserDocument>) {
       return false;
     }
 
-    return omit(userFound?.toJSON(), 'password');
+    return omit(userFound, 'password');
   } catch (error: any) {
     logger.error(`${error}`);
     throw new Error(error);
