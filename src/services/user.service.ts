@@ -72,3 +72,21 @@ export async function deleteUser(filter: FilterQuery<UserDocument>) {
     throw new Error(error);
   }
 }
+
+export async function validateUserCredentials({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const userFound = await UserModel.findOne({ email });
+
+  if (!userFound) return false;
+
+  const passwordIsValid = await userFound.comparePassword(password);
+
+  if (!passwordIsValid) return false;
+
+  return omit(userFound, 'password');
+}
