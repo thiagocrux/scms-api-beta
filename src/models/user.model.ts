@@ -14,7 +14,7 @@ export interface UserInput {
   admin: boolean;
 }
 
-interface UserDocument extends UserInput, Document {
+export interface UserDocument extends UserInput, Document {
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
