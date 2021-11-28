@@ -36,11 +36,11 @@ export async function findUsers(filter: FilterQuery<UserDocument>) {
       return false;
     }
 
-    const usersWithoutPasswordFields = usersFound.map(user => {
+    const usersWithPasswordsOmitted = usersFound.map(user => {
       return omit(user, 'password');
     });
 
-    return usersWithoutPasswordFields;
+    return usersWithPasswordsOmitted;
   } catch (error: any) {
     logger.error(`${error}`);
     throw new Error(error);
