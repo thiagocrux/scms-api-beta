@@ -1,6 +1,7 @@
 import { omit } from 'lodash';
 import logger from '../utils/logger';
-import UserModel, { UserInput } from '../models/user.model';
+import UserModel, { UserDocument, UserInput } from '../models/user.model';
+import { FilterQuery, UpdateQuery } from 'mongoose';
 
 export async function createUser(input: UserInput) {
   try {
@@ -12,7 +13,7 @@ export async function createUser(input: UserInput) {
   }
 }
 
-export async function findUser(filter: object) {
+export async function findUser(filter: FilterQuery<UserDocument>) {
   try {
     const userFound = await UserModel.findOne(filter);
 
@@ -27,7 +28,7 @@ export async function findUser(filter: object) {
   }
 }
 
-export async function findUsers(filter: object) {
+export async function findUsers(filter: FilterQuery<UserDocument>) {
   try {
     const usersFound = await UserModel.find(filter).lean();
 
@@ -46,7 +47,10 @@ export async function findUsers(filter: object) {
   }
 }
 
-export async function updateUser(filter: object, update: object) {
+export async function updateUser(
+  filter: FilterQuery<UserDocument>,
+  update: UpdateQuery<UserDocument>
+) {
   try {
     const updatedUser = await UserModel.findOneAndUpdate(filter, update, {
       returnDocument: 'after',
@@ -59,7 +63,7 @@ export async function updateUser(filter: object, update: object) {
   }
 }
 
-export async function deleteUser(filter: object) {
+export async function deleteUser(filter: FilterQuery<UserDocument>) {
   try {
     const deletedUser = await UserModel.findOneAndDelete(filter);
     return omit(deletedUser, 'password');
