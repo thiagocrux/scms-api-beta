@@ -21,7 +21,7 @@ export async function findUser(filter: FilterQuery<UserDocument>) {
       return false;
     }
 
-    return omit(userFound, 'password');
+    return omit(userFound.toJSON(), 'password');
   } catch (error: any) {
     logger.error(`${error}`);
     throw new Error(error);
@@ -56,7 +56,7 @@ export async function updateUser(
       returnDocument: 'after',
     });
 
-    return omit(updatedUser, 'password');
+    return omit(updatedUser?.toJSON(), 'password');
   } catch (error: any) {
     logger.error(`${error}`);
     throw new Error(error);
@@ -66,7 +66,7 @@ export async function updateUser(
 export async function deleteUser(filter: FilterQuery<UserDocument>) {
   try {
     const deletedUser = await UserModel.findOneAndDelete(filter);
-    return omit(deletedUser, 'password');
+    return omit(deletedUser?.toJSON(), 'password');
   } catch (error: any) {
     logger.error(`${error}`);
     throw new Error(error);
@@ -82,11 +82,15 @@ export async function validateUserCredentials({
 }) {
   const userFound = await UserModel.findOne({ email });
 
-  if (!userFound) return false;
+  if (!userFound) {
+    return false;
+  }
 
   const passwordIsValid = await userFound.comparePassword(password);
 
-  if (!passwordIsValid) return false;
+  if (!passwordIsValid) {
+    return false;
+  }
 
-  return omit(userFound, 'password');
+  return omit(userFound.toJSON(), 'password');
 }
