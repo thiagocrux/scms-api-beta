@@ -6,18 +6,20 @@ export interface UserInput {
   email: string;
   password: string;
   cpf: string;
-  role: string;
+  profession: string;
   professionalRegistration: string;
   councilRegistration: string;
   workLocation: string;
   phone: string;
-  admin: boolean;
+  role: string;
+  passwordChangedAt?: Date | null;
 }
 
 export interface UserDocument extends UserInput, Document {
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
+  verifyPasswordChangeAfterLogin(tokenIssuedTimestamp: any): any;
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -26,12 +28,17 @@ const userSchema = new Schema<UserDocument>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     cpf: { type: String, required: true, unique: true },
-    role: { type: String, required: true },
+    profession: { type: String, required: true },
     professionalRegistration: { type: String, required: true },
     councilRegistration: { type: String, required: true },
     workLocation: { type: String, required: true },
     phone: { type: String, required: true },
-    admin: { type: Boolean, required: true },
+    passwordChangedAt: { type: Date, default: null },
+    role: {
+      type: String,
+      enum: ['admin', 'user', 'visitor'],
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -59,6 +66,19 @@ userSchema.methods.comparePassword = async function (
   return bcrypt
     .compare(candidatePassword, user.password)
     .catch((error: any) => false);
+};
+
+userSchema.methods.verifyPasswordChangeAfterLogin = function (
+  tokenIssuedAt: string
+): boolean {
+  if (this.passwordChangedAt) {
+    let formattedTimestamp: number = +this.passwordChangedAt.getTime();
+    formattedTimestamp = formattedTimestamp / 1000;
+    return +tokenIssuedAt < formattedTimestamp;
+  }
+
+  // In case the password has never changed...
+  return false;
 };
 
 const UserModel = model('User', userSchema);
