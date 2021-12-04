@@ -94,3 +94,14 @@ export async function validateUserCredentials({
 
   return omit(userFound.toJSON(), 'password');
 }
+
+export async function checkPasswordChangeAfterLogin(
+  userId: string,
+  tokenIssuedAt: string
+) {
+  const userFound = await UserModel.findOne({ _id: userId });
+
+  const isTokenValid = userFound?.verifyPasswordChangeAfterLogin(tokenIssuedAt);
+
+  return isTokenValid;
+}
