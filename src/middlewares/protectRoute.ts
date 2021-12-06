@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { findSessions } from '../services/session.service';
 import {
   findUser,
   checkPasswordChangeAfterLogin,
@@ -37,7 +38,7 @@ export default async function (
       .json({ error: 'Invalid token! Please log in again.' });
   }
 
-  // Check if the user still exists (check if the user is deleted in the meantime)
+  // Check if the user and session still exists
 
   const foundUser =
     decodedToken.payload &&
@@ -48,6 +49,10 @@ export default async function (
       error: 'The user belonging to this token does not longer exists.',
     });
   }
+
+  const activeSession =
+    decodedToken.payload &&
+    (await findSessions({ _id: decodedToken.payload.session }));
 
   // Check if user changed password after the token was issued
 
@@ -64,6 +69,8 @@ export default async function (
 
   // Grant access to protected route
 
+  request.session = activeSession._id;
   request.user = foundUser;
+
   return next();
 }
