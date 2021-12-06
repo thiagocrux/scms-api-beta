@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { createSession, findSessions } from '../services/session.service';
+import {
+  createSession,
+  findSessions,
+  updateSession,
+} from '../services/session.service';
 import { validateUserCredentials } from '../services/user.service';
 import { signJwt } from '../utils/jwt.utils';
 
@@ -39,29 +43,48 @@ export async function createSessionHandler(
 }
 
 export async function findSessionHandler(request: Request, response: Response) {
-  // Get user id from the locals
+  const sessionId = request.params.sessionId;
+
   // Look for a valid session for the specified user
+  const foundSession = await findSessions({ _id: sessionId });
+  console.log(`foundSession`, foundSession);
+
   // Return the sessions
+  response.status(200).json(foundSession);
 }
 
 export async function findSessionsHandler(
   request: Request,
   response: Response
 ) {
-  const sessionsFound = await findSessions({});
+  const foundSessions = await findSessions({});
 
-  if (!sessionsFound) {
+  if (!foundSessions) {
     return response.status(404).json({ error: 'Sessions not found' });
   }
 
-  return response.status(200).json(sessionsFound);
+  return response.status(200).json(foundSessions);
 }
 
 export async function deleteSessionHandler(
   request: Request,
   response: Response
 ) {
-  // Get the user id from the locals
-  // Update the actual session to be not valid
-  // Return the token
+  // Get the logged user and session ids from the locals
+  const loggedSessionId = request.session;
+  const loggedUserId = request.user;
+
+  // Update the actual session to be not valid (logout)
+  const updatedSession = await updateSession(
+    { _id: loggedSessionId, user: loggedUserId },
+    { valid: false }
+  );
+
+  request.user = undefined;
+  request.session = undefined;
+
+  // Return the tokens
+  return response
+    .status(200)
+    .json({ session: updatedSession, accessToken: null, refreshToken: null });
 }
