@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import logger from './logger';
 
+const databaseUri = process.env.DATABASE_URI;
+
 export default async function connectDatabase() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/scms-db');
+    databaseUri && (await mongoose.connect(databaseUri));
     logger.info('Database was successfully connected');
   } catch (error) {
     logger.error(`${error}`);
