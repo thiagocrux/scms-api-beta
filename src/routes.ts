@@ -15,6 +15,14 @@ import {
   findSessionsHandler,
 } from './controllers/session.controller';
 
+import {
+  createPatientHandler,
+  deletePatientHandler,
+  findPatientHandler,
+  findPatientsHandler,
+  updatePatientHandler,
+} from './controllers/patient.controller';
+
 import protectRoute from './middlewares/protectRoute';
 
 export default function routes(app: Express) {
@@ -32,4 +40,12 @@ export default function routes(app: Express) {
   app.get('/api/sessions', protectRoute, findSessionsHandler);
   app.get('/api/sessions/:sessionId', protectRoute, findSessionHandler);
   app.delete('/api/sessions/:sessionId', protectRoute, deleteSessionHandler);
+
+  // Patient routes
+
+  app.post('/api/patients', protectRoute, createPatientHandler);
+  app.get('/api/patients/', protectRoute, findPatientsHandler);
+  app.get('/api/patients/:patientId', protectRoute, findPatientHandler);
+  app.patch('/api/patients/:patientId', protectRoute, updatePatientHandler);
+  app.delete('/api/patients/:patientId', protectRoute, deletePatientHandler);
 }
