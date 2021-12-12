@@ -27,6 +27,9 @@ const observationSchema = new Schema<ObservationDocument>(
   }
 );
 
-const ObservationModel = model<ObservationDocument>('Exam', observationSchema);
+const ObservationModel = model<ObservationDocument>(
+  'Observation',
+  observationSchema
+);
 
 export default ObservationModel;
