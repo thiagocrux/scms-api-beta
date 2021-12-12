@@ -47,7 +47,6 @@ export async function findSessionHandler(request: Request, response: Response) {
 
   // Look for a valid session for the specified user
   const foundSession = await findSessions({ _id: sessionId });
-  console.log(`foundSession`, foundSession);
 
   // Return the sessions
   response.status(200).json(foundSession);
