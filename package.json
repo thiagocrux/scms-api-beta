@@ -1,5 +1,5 @@
 {
-  "name": "scms-api",
+  "name": "scms-api-beta",
   "version": "1.0.0",
   "description": "S.C.M.S. (Syphilis Case Management System) API",
   "main": "index.js",
